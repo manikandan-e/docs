@@ -89,28 +89,28 @@ Provided below the post code interface diagram with flow sequence
 | +--------------+     +-----------------+  |    I2C/IPMI  +----+-------------+
 | |              |     |                 |  |  +----------->BIC |             |
 | |              |     |   ipmbbridged   <--+--+           |    |     Host1   |
-| |              |     |                 |  |  |           +----+-------------+
-| | oem handlers |     +-------+---------+  |  | I2C/IPMI  +----+-------------+
+| |              |     |                 |  |  |           +------------------+
+| | oem handlers |     +-------+---------+  |  | I2C/IPMI  +------------------+
 | |              |             |            |  +----------->BIC |             |
 | |              |             |            |  |           |    |     Host2   |
-| |              |     +-------v---------+  |  |           +----+-------------+
-| | (fb-ipmi-oem)|     |                 |  |  | I2C/IPMI  +----+-------------+
+| |              |     +-------v---------+  |  |           +------------------+
+| | (fb-ipmi-oem)|     |                 |  |  | I2C/IPMI  +------------------+
 | |              <-----+     ipmid       |  |  +----------->BIC |             |
 | |              |     |                 |  |  |           |    |     Host3   |
-| +------+-------+     +-----------------+  |  |           +----+-------------+
-|        |                                  |  | I2C/IPMI  +----+-------------+
-|        | postcode                         |  +----------->BIC |             |
-|        |                                  |              |    |     HostN   |
-| +------v-------------------------------+  |              +----+-------------+
-| |                                      |  |
-| |     phosphor-host-postd              |  |             +-----------------+
-| |                                      |  |             |                 |
-| |       (ipmi snoop)                   |  |             | seven segment   |
-| |     xyz.openbmc_project.state.       +--+-------------> display         |
-| |     HostX(1,2,3..N).Boot.Raw.Value   <--+-+           |                 |
-| |                                      |  | |           |                 |
-| +-----------------------------+--------+  | |           +-----------------+
-|                               |           | |
+| +------+-------+     +-----------------+  |  |           +------------------+
+|        |                                  |  | I2C/IPMI  +------------------+
+|        | postcode    +-----------------+  |  +----------->BIC |             |
+|        |             | Host position   |  |              |    |     HostN   |
+|        |             |  from D-Bus     |  |              +----+-------------+
+|        |             +-------+---------+  |
+|        |                     |            |             +-----------------+
+|        |                     |            |             |                 |
+| +------v---------------------v---------+  |             | seven segment   |
+| |phosphor-host-postd                   +--+-------------> display         |
+| |(ipmisnoop)                           <--+-+           |                 |
+| |xyz.openbmc_project.State.HostX.      |  | |           |                 |
+| |Boot.Raw.Value                        |  | |           +-----------------+
+| +-----------------------------+--------+  | |
 |                 postcode event|           | |  xyz.openbmc_project.
 |                               |           | |  State.HostX(1,2,3..N).
 | +-----------------------------|--------+  | |  Boot.Postcode        +-----+
@@ -129,14 +129,14 @@ Provided below the post code interface diagram with flow sequence
 **Postcode Flow:**
 
  - BMC power-on the Host.
- - Host starts send postcode IPMI message continuously to BMC.
- - The ipmbbridged(phosphor-ipmi-ipmb)  extract the postcode from
-   the IPMI message.
- - The ipmbd(phosphor-ipmi-host) append host information and send
-   to phosphor-host-postd.
- - phosphor-host-postd sends postcode events to phosphor-post-code-manager
-   as well displays postcode in the seven segment display.
- - phosphor-post-code-manager store the postcode in directory.
+ - Host starts sending the postcode IPMI message continuously to the BMC
+ - The ipmbbridged(phosphor-ipmi-ipmb) extracts the postcode from IPMI message
+ - The ipmbd(phosphor-ipmi-host) appends host information with postcode and
+   sends to the phosphor-host-postd.
+ - phosphor-host-postd sends postcode events to the phosphor-post-code-manager
+   and displays postcode in the seven segment display.
+ - phosphor-post-code-manager stores the postcode as history in the /var
+   directory.
 
 ##  Platform Specific OEM Handler (fb-ipmi-oem)
 
@@ -145,9 +145,9 @@ This library is part of  the [phosphor-ipmi-host]
 and get the postcode  from host through
 [phosphor-ipmi-ipmb](https://github.com/openbmc/ipmbbridge).
 
- - Register IPMI OEM postcode callback interrupt handler.
- - Extract postcode from IPMI message (phosphor-ipm-host/phosphor-ipmi-ipmb).
- - Send extracted postcode to the phosphor-host-postd.
+ - Register IPMI OEM postcode callback handler.
+ - Extract postcode from IPMI message (phosphor-ipmi-host/phosphor-ipmi-ipmb).
+ - The phosphor-ipmi-host sends extracted postcode to the phosphor-host-postd.
 
 ## phosphor-host-postd
 
@@ -163,10 +163,8 @@ Postcode D-bus interface needs to be created based on host present discovery
    (fb-ipmi-oem, intel-ipmi-oem,etc).
  - Send event to post-code-manager based on which host's postcode received from
    IPMB interface (xyz.openbmc_project.State.HostX.Boot.Raw.Value)
- - Read host position from dbus property.
- - Display the received host post-code(raw value and host number pass
-   by fb-ipmi-oem) into the 7 segment display connected to BMC's 8
-   GPIOs based on the host position.
+ - phosphor-host-postd reads the host selection from the dbus property
+ - Display the latest postcode of the selected host read through D-Bus.
 
  **D-Bus interface**
  - xyz.openbmc_project.State.Host1.Boot.Raw.Value
@@ -200,9 +198,9 @@ The below D-Bus interface needs to be created for multi-host post-code history.
 ## Alternate design
 
 **phosphor-post-code-manager**
-       Change single process into multi-process  on phosphor-post-code-manager.
+       Change single process into multi-process on phosphor-post-code-manager.
 
   **Platform specific service(fb-yv2-misc) alternate to phosphor-host-postd**
       Create and run the platfrom specific process daemon to
-      handle IPMI postcode , seven segment  display  and
+      handle IPMI postcode, seven segment display and
       host position specific feature.
