@@ -22,6 +22,7 @@ The below component diagram shows the present implementation for postcode and
 history at high-level overview
 ```
 +----------------------------------+              +--------------------+
+|BMC                               |              |                    |
 |  +-------------------------------+              |                    |
 |  |Phosphor-host-postd            |              |                    |
 |  |                    +----------+              +------------+       |
@@ -46,7 +47,7 @@ history at high-level overview
 |  |                 +-------------+               +------------------+
 |  +-------------------------------+  xyz.openbmc_project.State.Boot.PostCode
 |                                  |
-|    BMC                           |
+|                                  |
 |  +-------------------------------+             +----------------------+
 |  |                               |  8GPIOs     |                      |
 |  |     SGPIO                     +-----------> |                      |
@@ -58,10 +59,10 @@ history at high-level overview
 ## Requirements
 
  - Read postcode from all servers.
- - Display the host postcode to the 7 segment display based on host position 
+ - Display the host postcode to the 7 segment display based on host position
    selection.
- - Provide a command interface for user to see any server(multi-host) current 
-   postcode .
+ - Provide a command interface for user to see any server(multi-host) current
+   postcode.
  - Provide a command interface for user to see any server(multi-host) postcode
    history.
  - Support for hot-plug-able host.
@@ -133,14 +134,14 @@ Provided below the post code interface diagram with flow sequence
    the IPMI message.
  - The ipmbd(phosphor-ipmi-host) append host information and send
    to phosphor-host-postd.
- - phosphor-host-postd displays send  postcode to phosphor-post-code-manager
-   as well display postcode in seven segment display.
+ - phosphor-host-postd sends postcode events to phosphor-post-code-manager
+   as well displays postcode in the seven segment display.
  - phosphor-post-code-manager store the postcode in directory.
 
 ##  Platform Specific OEM Handler (fb-ipmi-oem)
 
 This library is part of  the [phosphor-ipmi-host]
-(https://github.com/openbmc/phosphor-host-ipmid) 
+(https://github.com/openbmc/phosphor-host-ipmid)
 and get the postcode  from host through
 [phosphor-ipmi-ipmb](https://github.com/openbmc/ipmbbridge).
 
@@ -155,16 +156,17 @@ This feature adds to detect, when the hot plug-able host connected in the slot.
 Postcode D-bus interface needs to be created based on host present discovery
 (Host state /xyz/openbmc_project/state/hostX(1,2,3.N) D-bus interface).
 
- - Create, register and add dbus connection for 
-    "/xyz/openbmc_project/hostX(1,2,3.N)/state/boot/raw" 
+ - Create, register and add dbus connection for
+    "/xyz/openbmc_project/hostX(1,2,3.N)/state/boot/raw"
    based on host discovery as mentioned above.
  - Read each hosts postcode from Platform Specific OEM ServicesIPMI OEM handler
    (fb-ipmi-oem, intel-ipmi-oem,etc).
  - Send event to post-code-manager based on which host's postcode received from
    IPMB interface (xyz.openbmc_project.State.HostX.Boot.Raw.Value)
  - Read host position from dbus property.
-Display current post-code into the 7 segment display connected to BMC's 8 GPIOs
-based on the host position.
+ - Display the received host post-code(raw value and host number pass
+   by fb-ipmi-oem) into the 7 segment display connected to BMC's 8
+   GPIOs based on the host position.
 
  **D-Bus interface**
  - xyz.openbmc_project.State.Host1.Boot.Raw.Value
