@@ -81,6 +81,7 @@ Following modules will be updated for this implementation
  - phosphor-dbus-interfaces.
 
 **Interface Diagram**
+
 Provided below the post code interface diagram with flow sequence
 ```
 +-------------------------------------------+
@@ -152,6 +153,7 @@ and get the postcode  from host through
 ## phosphor-host-postd
 
 **Host discovery**
+
 This feature adds to detect, when the hot plug-able host connected in the slot.
 Postcode D-bus interface needs to be created based on host present discovery
 (Host state /xyz/openbmc_project/state/hostX(1,2,3.N) D-bus interface).
@@ -167,6 +169,7 @@ Postcode D-bus interface needs to be created based on host present discovery
  - Display the latest postcode of the selected host read through D-Bus.
 
  **D-Bus interface**
+
  - xyz.openbmc_project.State.Host1.Boot.Raw.Value
  - xyz.openbmc_project.State.Host2.Boot.Raw.Value
  - xyz.openbmc_project.State.Host3.Boot.Raw.Value
@@ -198,9 +201,11 @@ The below D-Bus interface needs to be created for multi-host post-code history.
 ## Alternate design
 
 **phosphor-post-code-manager**
-       Change single process into multi-process on phosphor-post-code-manager.
+
+   Change single process into multi-process on phosphor-post-code-manager.
 
   **Platform specific service(fb-yv2-misc) alternate to phosphor-host-postd**
-      Create and run the platfrom specific process daemon to
-      handle IPMI postcode, seven segment display and
-      host position specific feature.
+
+   Create and run the platfrom specific process daemon to
+   handle IPMI postcode, seven segment display and
+   host position specific feature.
