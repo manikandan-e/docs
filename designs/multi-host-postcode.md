@@ -69,9 +69,9 @@ history at high-level overview
 
 ## Proposed Design
 
-This document proposes a new design engaging the IPMB interface to read port-80
-post code from multiple-host. This design also supports host discovery
-including the hot-plug-able host connected in slot.
+This document proposes a new design engaging the IPMB interface additional
+to LPC interface to read port-80 post code from multiple-host. This design also
+supports host discovery including the hot-plug-able host connected in the slot.
 
 Following modules will be updated for this implementation
 
@@ -79,6 +79,7 @@ Following modules will be updated for this implementation
  - phosphor-post-code-manager.
  - platform specific OEM handler (fb-ipmi-oem).
  - phosphor-dbus-interfaces.
+ - bmcweb(redfish logging service).
 
 **Interface Diagram**
 
@@ -120,9 +121,9 @@ Provided below the post code interface diagram with flow sequence
 | | | (d-bus based)  |  |Histroy       | |  |                         | CLI |
 | | | with hotplug   |  |   (1,2,3..N) | |  |                         |     |
 | | |                |  |              <-+--+------------------------->     |
-| | +----------------+  +--------------+ |  |                         |     |
-| |                                      |  |                         +-----+
-| | Phosphor-post-code-manager           |  |
+| | +----------------+  +--------------+ |  | /redfish/v1/Systems/    |     |
+| |                                      |  | system/LogServices/     +-----+
+| | Phosphor-post-code-manager           |  | HostX(1,2,3.N)/PostCodes
 | +--------------------------------------+  |
 +-------------------------------------------+
 ```
@@ -197,6 +198,10 @@ The below D-Bus interface needs to be created for multi-host post-code history.
 ## phosphor-dbus-interfaces
 
    All multi-host postcode related property and method need to create.
+
+## bmcweb
+   postcode history needs to be handled for multi-host through redfish
+   logging service.
 
 ## Alternate design
 
