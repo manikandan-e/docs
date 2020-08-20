@@ -160,7 +160,7 @@ and get the postcode  from host through
 
 The implementation involves the following changes in the phosphor-host-postd.
 
- - Create D-bus names for hosts.
+ - Create a D-Bus names for single-host and multi-host system accordingly.
  - Send event to post-code-manager based on which host's postcode received from
    IPMB interface (xyz.openbmc_project.State.Boot.RawX(0,1,2,3..N).Value).
  - phosphor-host-postd reads the host selection from the dbus property.
@@ -184,13 +184,13 @@ The implementation involves the following changes in the phosphor-host-postd.
 The phosphor-post-code-manager is the multiple service for multi-host.
 This design shall not affect single host for post-code.
 
- - Create D-bus object for hosts.
+ - Create a D-Bus names for single-host and multi-host system accordingly.
  - Store/retrieve post-code from directory (/var/lib/phosphor-post-code-manager/
    hostX(0,1,2,3..N)) based on event received from phosphor-host-postd
 
  **D-Bus interface**
 
-   The below D-Bus names needs to be created for multi-host post-code history.
+   The below D-Bus names needs to be created for multi-host post-code.
 
     Service   name    -- xyz.openbmc_project.State.Boot.PostCodeX(0,1,2..N)
 
