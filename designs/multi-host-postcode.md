@@ -160,14 +160,12 @@ and get the postcode  from host through
 
 The implementation involves the following changes in the phosphor-host-postd.
 
- - Create D-bus names for hosts..
- - Read each hosts postcode from Platform Specific OEM ServicesIPMI OEM handler
+ - Create D-bus names for hosts.
    (fb-ipmi-oem, intel-ipmi-oem,etc).
  - Send event to post-code-manager based on which host's postcode received from
    IPMB interface (xyz.openbmc_project.State.Boot.RawX(0,1,2,3..N).Value)
- - phosphor-host-postd reads the host selection from the dbus property
+ - phosphor-host-postd reads the host selection from the dbus property.
  - Display the latest postcode of the selected host read through D-Bus.
- - unregister the D-Bus interface when host removed in the slot.
 
  **D-Bus interface**
 
@@ -209,7 +207,7 @@ multi-host. This design shall not affect single host for post-code.
   phosphor-host-postd and fb-ipmi-oem.
 
   https://github.com/openbmc/phosphor-dbus-interfaces/blob/master/
-  xyz/openbmc_project/State/Boot/Raw.interface.yaml
+  xyz/openbmc_project/State/Boot/Raw.interface.yaml.
 
   methods:
 
@@ -234,10 +232,8 @@ multi-host. This design shall not affect single host for post-code.
 
 **phosphor-post-code-manager**
 
-   The single process to handle the multi-host postcode history.
-
-**Platform specific service(fb-yv2-misc) alternate to phosphor-host-postd**
-
-   Create and run the platfrom specific process daemon to
-   handle IPMI postcode, seven segment display and
-   host position specific feature.
+   The single service to handle the multi-host postcode.
+   X86-power-control and obmc-console already using multi-service
+   approach.
+   Multi-service approach more scalable to handle multi-host
+   than single service.
