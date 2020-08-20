@@ -37,7 +37,7 @@ history at high-level overview
 |         |                        |        |     |                    |
 |         +                        |        |     |                    |
 |   postcode change event          |        +     +--------------------+
-|         +                        |  xyz.openbmc_project.State.Boot.Raw
+|         +                        | xyz.openbmc_project.State.Boot.Raw
 |         |                        |        +
 |         v                        |        |      +------------------+
 |  +------+------------------------+        +----->+                  |
@@ -46,7 +46,7 @@ history at high-level overview
 |  |                 |   postcode  +<------------->+                  |
 |  |                 |   history   |               |                  |
 |  |                 +-------------+               +------------------+
-|  +-------------------------------+  xyz.openbmc_project.State.Boot.PostCode
+|  +-------------------------------+ xyz.openbmc_project.State.Boot.PostCode
 |                                  |
 |                                  |
 |  +-------------------------------+             +----------------------+
@@ -120,24 +120,25 @@ Provided below the post code interface diagram with flow sequence
 | +--------------------------------------+  | |  PostcodeX(0,1,2..N)  +-----+
 | | +----------------+  +-------v------+ |  | |                       |     |
 | | |                |  |              | |  | +----------------------->     |
-| | |  Process1      |  |process N     | |  |                         | CLI |
+| | |  Process1      |  | Process N    | |  |                         | CLI |
 | | |   (host1)      |  |  (hostN)     | |  |                         |     |
 | | |                |  |              | |<-+------------------------->     |
 | | +----------------+  +--------------+ |  | /redfish/v1/Systems/    |     |
 | |                                      |  | system/LogServices/     +-----+
-| | Phosphor-post-code-manager**         |  | PostCodesX(0,1,2..N)
+| | Phosphor-post-code-manager@@         |  | PostCodesX(0,1,2..N)
 | +--------------------------------------+  |
 +-------------------------------------------+
 
-** Incase of the single host, process1 only run for host0.
+@@ - Incase of the single host, only process1 runs for host0. For multi-host
+     one process will be running per host(multi-process).
 
 ```
 
 **Postcode Flow:**
 
  - BMC power-on the host.
- - Host starts sending the postcode IPMI message continuously to the BMC
- - The ipmbbridged(phosphor-ipmi-ipmb) extracts the postcode from IPMI message
+ - Host starts sending the postcode IPMI message continuously to the BMC.
+ - The ipmbbridged(phosphor-ipmi-ipmb) extracts postcode from IPMI message.
  - The ipmbd(phosphor-ipmi-host) appends host information with postcode and
    sends to the phosphor-host-postd.
  - phosphor-host-postd sends postcode events to the phosphor-post-code-manager
@@ -147,9 +148,9 @@ Provided below the post code interface diagram with flow sequence
 
 ##  Platform Specific OEM Handler (fb-ipmi-oem)
 
-This library is part of  the [phosphor-ipmi-host]
+This library is part of the [phosphor-ipmi-host]
 (https://github.com/openbmc/phosphor-host-ipmid)
-and get the postcode  from host through
+and gets the postcode from host through
 [phosphor-ipmi-ipmb](https://github.com/openbmc/ipmbbridge).
 
  - Register IPMI OEM postcode callback handler.
@@ -158,9 +159,11 @@ and get the postcode  from host through
 
 ## phosphor-host-postd
 
-The implementation involves the following changes in the phosphor-host-postd.
+This implementation involves the following changes in the phosphor-host-postd.
 
- - Create a D-Bus names for single-host and multi-host system accordingly.
+ - Create D-Bus names for single-host and multi-host system accordingly.
+   The community follows conventions Host0 for single host and Host1 to N for
+   multi-host.
  - Send event to post-code-manager based on which host's postcode received from
    IPMB interface (xyz.openbmc_project.State.Boot.RawX(0,1,2,3..N).Value).
  - phosphor-host-postd reads the host selection from the dbus property.
@@ -168,11 +171,11 @@ The implementation involves the following changes in the phosphor-host-postd.
 
  **D-Bus interface**
 
-  The below D-Bus names needs to be created for the multi-host post-code.
+  The following D-Bus names need to be created for the multi-host post-code.
 
-    Service   name    -- xyz.openbmc_project.State.Boot.Raw(0,1,2..N)
+    Service name      -- xyz.openbmc_project.State.Boot.Raw(0,1,2..N)
 
-    Obj path  name    -- /xyz/openbmc_project/State/Boot/Raw
+    Obj path name     -- /xyz/openbmc_project/State/Boot/Raw
 
     Interface name    -- xyz.openbmc_project.State.Boot.Raw
 
@@ -181,28 +184,33 @@ The implementation involves the following changes in the phosphor-host-postd.
 
 ## phosphor-post-code-manager
 
-The phosphor-post-code-manager is the multiple service for multi-host.
-This design shall not affect single host for post-code.
+The phosphor-post-code-manager is a multi service design for multi-host.
+The single host postcode handling D-bus naming conventions will be updated
+to comply the community naming scheme.
 
- - Create a D-Bus names for single-host and multi-host system accordingly.
+ - Create D-Bus names for single-host and multi-host system accordingly.
+   The community follows conventions Host0 for single host and Host1 to N for
+   multi-host.
  - Store/retrieve post-code from directory (/var/lib/phosphor-post-code-manager/
    hostX(0,1,2,3..N)) based on event received from phosphor-host-postd
 
  **D-Bus interface**
 
-   The below D-Bus names needs to be created for multi-host post-code.
+   The following D-Bus names needs to be created for multi-host post-code.
 
-    Service   name    -- xyz.openbmc_project.State.Boot.PostCodeX(0,1,2..N)
+    Service name     -- xyz.openbmc_project.State.Boot.PostCodeX(0,1,2..N)
 
-    Obj path  name    -- /xyz/openbmc_project/State/Boot/PostCode
+    Obj path name    -- /xyz/openbmc_project/State/Boot/PostCode
 
-    Interface name    -- xyz.openbmc_project.State.Boot.PostCode
+    Interface name   -- xyz.openbmc_project.State.Boot.PostCode
 
 
 ## phosphor-dbus-interfaces
 
-  The new method needs to create to interact between
-  phosphor-host-postd and fb-ipmi-oem.
+  The new method needs to be created to interact between phosphor-host-postd
+  and fb-ipmi-oem.
+
+  The new D-Bus method is added in the below path,
 
   https://github.com/openbmc/phosphor-dbus-interfaces/blob/master/
   xyz/openbmc_project/State/Boot/Raw.interface.yaml.
@@ -228,12 +236,13 @@ This design shall not affect single host for post-code.
 
 ## Alternate design
 
-**phosphor-post-code-manager**
+**phosphor-post-code-manager single process approach**
 
-   The single service to handle the multi-host postcode.
+   This implementation consider single service to handle multi-host postcode.
+   In this approach, all D-Bus handling will taken care by the single process.
 
-   x86-power-control and obmc-console already using multi-service
-   approach.
+   Single service is different than existing x86-power-control and obmc-console
+   where multi-service approach is used.
 
-   Multi-service approach more scalable to handle multi-host
-   than single service.
+   Multi-service approach is more scalable to handle multi-host than
+   the single service.
