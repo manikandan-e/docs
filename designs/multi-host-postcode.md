@@ -129,7 +129,7 @@ Provided below the post code interface diagram with flow sequence
 | +--------------------------------------+  |
 +-------------------------------------------+
 
-** Incase of the single host, process1 only run.
+** Incase of the single host, process1 only run for host0.
 
 ```
 
