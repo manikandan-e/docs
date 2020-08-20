@@ -135,7 +135,7 @@ Provided below the post code interface diagram with flow sequence
 
 **Postcode Flow:**
 
- - BMC power-on the Host.
+ - BMC power-on the host.
  - Host starts sending the postcode IPMI message continuously to the BMC
  - The ipmbbridged(phosphor-ipmi-ipmb) extracts the postcode from IPMI message
  - The ipmbd(phosphor-ipmi-host) appends host information with postcode and
@@ -161,9 +161,8 @@ and get the postcode  from host through
 The implementation involves the following changes in the phosphor-host-postd.
 
  - Create D-bus names for hosts.
-   (fb-ipmi-oem, intel-ipmi-oem,etc).
  - Send event to post-code-manager based on which host's postcode received from
-   IPMB interface (xyz.openbmc_project.State.Boot.RawX(0,1,2,3..N).Value)
+   IPMB interface (xyz.openbmc_project.State.Boot.RawX(0,1,2,3..N).Value).
  - phosphor-host-postd reads the host selection from the dbus property.
  - Display the latest postcode of the selected host read through D-Bus.
 
@@ -182,13 +181,12 @@ The implementation involves the following changes in the phosphor-host-postd.
 
 ## phosphor-post-code-manager
 
-The phosphor-post-code-manager is the single process based on host discovery for
-multi-host. This design shall not affect single host for post-code.
+The phosphor-post-code-manager is the multiple service for multi-host.
+This design shall not affect single host for post-code.
 
  - Create D-bus object for hosts.
  - Store/retrieve post-code from directory (/var/lib/phosphor-post-code-manager/
    hostX(0,1,2,3..N)) based on event received from phosphor-host-postd
- - unregister the D-bus interface when host removed in the slot.
 
  **D-Bus interface**
 
@@ -233,7 +231,9 @@ multi-host. This design shall not affect single host for post-code.
 **phosphor-post-code-manager**
 
    The single service to handle the multi-host postcode.
-   X86-power-control and obmc-console already using multi-service
+
+   x86-power-control and obmc-console already using multi-service
    approach.
+
    Multi-service approach more scalable to handle multi-host
    than single service.

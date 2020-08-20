@@ -170,13 +170,13 @@ The implementation involves the following changes in the phosphor-host-postd.
 
   The below D-Bus names needs to be created for the multi-host post-code.
 
-  Service   name    -- xyz.openbmc_project.State.Boot.Raw(0,1,2..N)
+   Service   name    -- xyz.openbmc_project.State.Boot.Raw(0,1,2..N)
 
-  Obj path  name    -- /xyz/openbmc_project/State/Boot/Raw
+   Obj path  name    -- /xyz/openbmc_project/State/Boot/Raw
 
-  Interface name    -- xyz.openbmc_project.State.Boot.Raw
+   Interface name    -- xyz.openbmc_project.State.Boot.Raw
 
-  method            -- readPostcode(new method added in
+   method            -- readPostcode(new method added in
                         phoshpor-dbus-interfaces)
 
 ## phosphor-post-code-manager
@@ -192,11 +192,11 @@ This design shall not affect single host for post-code.
 
    The below D-Bus names needs to be created for multi-host post-code history.
 
-   Service   name    -- xyz.openbmc_project.State.Boot.PostCodeX(0,1,2..N)
+    Service   name    -- xyz.openbmc_project.State.Boot.PostCodeX(0,1,2..N)
 
-   Obj path  name    -- /xyz/openbmc_project/State/Boot/PostCode
+    Obj path  name    -- /xyz/openbmc_project/State/Boot/PostCode
 
-   Interface name    -- xyz.openbmc_project.State.Boot.PostCode
+    Interface name    -- xyz.openbmc_project.State.Boot.PostCode
 
 
 ## phosphor-dbus-interfaces
