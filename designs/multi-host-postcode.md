@@ -121,8 +121,8 @@ Provided below the post code interface diagram with flow sequence
 | | +----------------+  +-------v------+ |  | |                       |     |
 | | |                |  |              | |  | +----------------------->     |
 | | |  Process1      |  |process N     | |  |                         | CLI |
-| | |   (host1)      +-->  (hostN)     | |  |                         |     |
-| | |                |  |              <-|--+------------------------->     |
+| | |   (host1)      |  |  (hostN)     | |  |                         |     |
+| | |                |  |              | |<-+------------------------->     |
 | | +----------------+  +--------------+ |  | /redfish/v1/Systems/    |     |
 | |                                      |  | system/LogServices/     +-----+
 | | Phosphor-post-code-manager**         |  | PostCodesX(0,1,2..N)
