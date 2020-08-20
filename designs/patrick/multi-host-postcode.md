@@ -92,7 +92,7 @@ Provided below the post code interface diagram with flow sequence
 |                                           |
 | +--------------+     +-----------------+  |    I2C/IPMI  +----+-------------+
 | |              |     |                 |  |  +----------->BIC |             |
-| |              |     |   ipmbbridged   <--+--+           |    |     Host1   |
+| |              |     |   ipmbbridged   <-----+           |    |     Host1   |
 | |              |     |                 |  |  |           +------------------+
 | | oem handlers |     +-------+---------+  |  | I2C/IPMI  +------------------+
 | |              |             |            |  +----------->BIC |             |
@@ -110,8 +110,8 @@ Provided below the post code interface diagram with flow sequence
 |        |                     |            |             +-----------------+
 |        |                     |            |             |                 |
 | +------v---------------------v---------+  |             | seven segment   |
-| |phosphor-host-postd                   +--+-------------> display         |
-| |(ipmisnoop)                           <--+-+           |                 |
+| |phosphor-host-postd                   +----------------> display         |
+| |(ipmisnoop)                           <----+           |                 |
 | |xyz.openbmc_project.State.            |  | |           |                 |
 | |Boot.RawX(0,1,2,..N).Value            |  | |           +-----------------+
 | +--------------------------------------+  | |
@@ -122,7 +122,7 @@ Provided below the post code interface diagram with flow sequence
 | | |                |  |              | |  | +----------------------->     |
 | | |  Process1      |  |process N     | |  |                         | CLI |
 | | |   (host1)      +-->  (hostN)     | |  |                         |     |
-| | |                |  |              <-|--+------------------------->     |
+| | |                |  |              <------------------------------>     |
 | | +----------------+  +--------------+ |  | /redfish/v1/Systems/    |     |
 | |                                      |  | system/LogServices/     +-----+
 | | Phosphor-post-code-manager**         |  | PostCodesX(0,1,2..N)
