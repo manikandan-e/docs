@@ -231,7 +231,9 @@ This design shall not affect single host for post-code.
 **phosphor-post-code-manager**
 
    The single service to handle the multi-host postcode.
+
    X86-power-control and obmc-console already using multi-service
    approach.
+
    Multi-service approach more scalable to handle multi-host
    than single service.
